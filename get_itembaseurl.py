@@ -11,13 +11,19 @@ headers = {
         'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
 }
 
-def get_type_base_url(url):
+def get_type_base_url(url,times=0):
     '''
     爬取每类商品的主页，存储在mongodb中。
     :param url: 58同城首页
     :return: None
     '''
-    r = requests.get(url, headers=headers)
+
+    if times == 3:
+        return
+    try:
+        r = requests.get(url, headers=headers)
+    except:
+        return get_type_base_url(url,times+1)
     soup = BeautifulSoup(r.text, 'lxml')
     item_lists = soup.select('ul.ym-submnu > li > span > a')
     for item in item_lists:
